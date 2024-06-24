@@ -1,0 +1,64 @@
+
+create trigger actualizar_saldo on transaccion
+for insert as
+
+				
+begin transaction
+
+			 --DEPOSITO--
+	
+	if((select tra_tipotra_cod from inserted) = 1)
+		begin
+			update cuenta 
+			set cue_sal = cue_sal + (select tra_monto from inserted)
+			where cue_num = (select tra_cue_origen from inserted)
+
+			select cue_sal from cuenta 
+			where cue_num = (select tra_cue_origen from inserted)
+
+			
+		end
+			 --EXTRACCION--
+
+	if((select tra_tipotra_cod from inserted) = 2)
+		begin
+			update cuenta 
+			set cue_sal = cue_sal - (select tra_monto from inserted)
+			where cue_num = (select tra_cue_origen from inserted)
+
+			select cue_sal from cuenta 
+			where cue_num = (select tra_cue_origen from inserted)
+
+			
+		end
+
+			 --TRANSFERENCIA--
+
+	if((select tra_tipotra_cod from inserted) = 3)
+		begin
+			update cuenta 
+			set cue_sal = cue_sal - (select tra_monto from inserted)
+			where cue_num = (select tra_cue_origen from inserted)
+
+			update cuenta 
+			set cue_sal = cue_sal + (select tra_monto from inserted)
+			where cue_num = (select tra_cue_destino from inserted)
+
+			select cue_sal as 'Cuenta oringen' 
+			from cuenta 
+			where cue_num = (select tra_cue_origen from inserted)
+
+			select cue_sal as 'Cuenta destino' 
+			from cuenta 
+			where cue_num = (select tra_cue_destino from inserted)
+			
+			
+		end
+	
+commit transaction
+
+--------------------------------------------------------------------------------------------------------------------
+				--TEST--
+
+insert into transaccion(tra_cue_origen,tra_cue_destino,tra_tipotra_cod,tra_monto)values(23450,0,2,100)
+insert into transaccion(tra_cue_origen,tra_cue_destino,tra_tipotra_cod,tra_monto)values(23450,21238,3,2000)
