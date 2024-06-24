@@ -57,8 +57,3 @@ begin transaction
 	
 commit transaction
 
---------------------------------------------------------------------------------------------------------------------
-				--TEST--
-
-insert into transaccion(tra_cue_origen,tra_cue_destino,tra_tipotra_cod,tra_monto)values(23450,0,2,100)
-insert into transaccion(tra_cue_origen,tra_cue_destino,tra_tipotra_cod,tra_monto)values(23450,21238,3,2000)
