@@ -1,4 +1,4 @@
-/NUEVO RESUBIDO/
+/NUEVO RESUBIDO 1/
 create trigger actualizar_saldo on transaccion
 for insert as
 
